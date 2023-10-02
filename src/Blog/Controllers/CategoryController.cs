@@ -1,5 +1,7 @@
 ﻿using Blog.Data;
+using Blog.Extensions;
 using Blog.Models;
+using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,33 +14,52 @@ namespace Blog.Controllers
         [HttpGet("v1/categories")]
         public async Task<IActionResult> GetAsync([FromServices] DataContext context)
         {
-            var categories = await context.Categories.ToListAsync();
-
-            return Ok(categories);
+            try
+            {
+                var categories = await context.Categories.ToListAsync();
+                return Ok(new ResultViewModel<List<Category>>(categories));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResultViewModel<List<Category>>("Não foi possível obter as categorias"));
+            }
         }
 
         [HttpGet("v1/categories/{id:int}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id, [FromServices] DataContext context)
         {
-            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            if (category == null)
-                return NotFound();
+            try
+            {
+                var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                if (category == null)
+                    return NotFound(new ResultViewModel<Category>("Não foi possível encontrar a categoria"));
 
-            return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResultViewModel<Category>("Não foi possível obter a categoria"));
+            }
         }
 
         [HttpPost("v1/categories")]
-        public async Task<IActionResult> PostAsync([FromBody] Category model, [FromServices] DataContext context)
+        public async Task<IActionResult> PostAsync([FromBody] EditorCategoryViewModel model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
+
+            var category = new Category
+            {
+                Name = model.Name,
+                Slug = model.Slug.ToLower()
+            };
 
             try
             {
-                context.Categories.Add(model);
+                context.Categories.Add(category);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/categories/{model.Id}", model);
+                return Created($"v1/categories/{category.Id}", category);
             }
             catch (Exception)
             {
@@ -47,24 +68,24 @@ namespace Blog.Controllers
         }
 
         [HttpPut("v1/categories/{id:int}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] int id, [FromBody] Category model, [FromServices] DataContext context)
+        public async Task<IActionResult> UpdateAsync([FromRoute] int id, [FromBody] EditorCategoryViewModel model, [FromServices] DataContext context)
         {
-            if (id != model.Id)
-                return NotFound(new { message = "Categoria não encontrada" });
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            if (category == null)
+                return NotFound(new { message = "Categoria não encontrada" });
+
+            category.Name = model.Name;
+            category.Slug = model.Slug;
+
             try
             {
-                context.Entry(model).State = EntityState.Modified;
+                context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return Ok(model);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return BadRequest(new { message = "Este registro já foi atualizado" });
+                return Ok(category);
             }
             catch (Exception)
             {
