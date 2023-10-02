@@ -4,6 +4,7 @@ using Blog.Models;
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace Blog.Controllers
 {
@@ -59,11 +60,11 @@ namespace Blog.Controllers
                 context.Categories.Add(category);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/categories/{category.Id}", category);
+                return Created($"v1/categories/{category.Id}", new ResultViewModel<Category>(category));
             }
-            catch (Exception)
+            catch (DbException)
             {
-                return BadRequest(new { message = "Não foi possível criar a categoria" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResultViewModel<Category>("Não foi possível criar a categoria"));
             }
         }
 
@@ -71,11 +72,11 @@ namespace Blog.Controllers
         public async Task<IActionResult> UpdateAsync([FromRoute] int id, [FromBody] EditorCategoryViewModel model, [FromServices] DataContext context)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
 
             var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
-                return NotFound(new { message = "Categoria não encontrada" });
+                return NotFound(new ResultViewModel<Category>("Categoria não encontrada"));
 
             category.Name = model.Name;
             category.Slug = model.Slug;
@@ -85,11 +86,11 @@ namespace Blog.Controllers
                 context.Categories.Update(category);
                 await context.SaveChangesAsync();
 
-                return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível atualizar a categoria" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResultViewModel<Category>("Não foi possível atualizar a categoria"));
             }
         }
 
@@ -98,18 +99,18 @@ namespace Blog.Controllers
         {
             var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
-                return NotFound(new { message = "Categoria não encontrada" });
+                return NotFound(new ResultViewModel<Category>("Categoria não encontrada"));
 
             try
             {
                 context.Categories.Remove(category);
                 await context.SaveChangesAsync();
 
-                return Ok(new { message = "Categoria removida com sucesso" });
+                return Ok(new ResultViewModel<Category>("Categoria removida com sucesso"));
             }
             catch (Exception)
             {
-                return BadRequest(new { message = "Não foi possível remover a categoria" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResultViewModel<Category>("Não foi possível remover a categoria"));
             }
         }
 
