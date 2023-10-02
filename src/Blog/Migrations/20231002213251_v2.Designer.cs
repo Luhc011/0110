@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231001235709_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20231002213251_v2")]
+    partial class v2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,7 +73,7 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 1, 23, 57, 8, 934, DateTimeKind.Utc).AddTicks(8297))
+                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(1782))
                         .HasColumnName("CreateDate");
 
                     b.Property<string>("Slug")
@@ -94,7 +94,7 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 1, 23, 57, 8, 934, DateTimeKind.Utc).AddTicks(8713))
+                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(2217))
                         .HasColumnName("LastUpdateDate");
 
                     b.HasKey("Id");
@@ -127,7 +127,7 @@ namespace Blog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("Blog.Models.Tag", b =>
@@ -161,18 +161,15 @@ namespace Blog.Migrations
 
                     b.Property<string>("Bio")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(180)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -181,13 +178,13 @@ namespace Blog.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Slug");
 
                     b.HasKey("Id");
 
@@ -232,14 +229,14 @@ namespace Blog.Migrations
                     b.HasOne("Blog.Models.User", "Author")
                         .WithMany("Posts")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Post_Author");
 
                     b.HasOne("Blog.Models.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Post_Category");
 
@@ -253,14 +250,14 @@ namespace Blog.Migrations
                     b.HasOne("Blog.Models.Tag", null)
                         .WithMany()
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_PostTag_PostId");
 
                     b.HasOne("Blog.Models.Post", null)
                         .WithMany()
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_PostTag_TagId");
                 });

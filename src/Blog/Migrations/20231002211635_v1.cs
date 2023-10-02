@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDatabase : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,7 @@ namespace Blog.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Role",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -36,7 +36,7 @@ namespace Blog.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,11 +60,11 @@ namespace Blog.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "NVARCHAR(80)", maxLength: 80, nullable: false),
-                    Email = table.Column<string>(type: "VARCHAR(180)", maxLength: 180, nullable: false),
-                    PasswordHash = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
-                    Bio = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
-                    Image = table.Column<string>(type: "VARCHAR(200)", maxLength: 200, nullable: false),
-                    Slug = table.Column<string>(type: "VARCHAR(80)", maxLength: 80, nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "VARCHAR(80)", maxLength: 80, nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,14 +77,14 @@ namespace Blog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2302)),
+                    LastUpdateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2640)),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    AuthorId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "NVARCHAR(80)", maxLength: 80, nullable: false),
-                    Summary = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
-                    Body = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: false),
-                    Slug = table.Column<string>(type: "VARCHAR(80)", maxLength: 80, nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 1, 23, 57, 8, 934, DateTimeKind.Utc).AddTicks(8297)),
-                    LastUpdateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 1, 23, 57, 8, 934, DateTimeKind.Utc).AddTicks(8713))
+                    AuthorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,13 +94,13 @@ namespace Blog.Migrations
                         column: x => x.AuthorId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Post_Category",
                         column: x => x.CategoryId,
                         principalTable: "Category",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,7 +116,7 @@ namespace Blog.Migrations
                     table.ForeignKey(
                         name: "FK_UserRole_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "Roles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -142,13 +142,13 @@ namespace Blog.Migrations
                         column: x => x.PostId,
                         principalTable: "Tag",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PostTag_TagId",
                         column: x => x.TagId,
                         principalTable: "Post",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -206,7 +206,7 @@ namespace Blog.Migrations
                 name: "Post");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "User");

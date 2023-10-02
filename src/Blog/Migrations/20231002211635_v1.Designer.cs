@@ -4,6 +4,7 @@ using Blog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231002211635_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,8 +64,7 @@ namespace Blog.Migrations
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("NVARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -70,28 +72,25 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(1782))
+                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2302))
                         .HasColumnName("CreateDate");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("VARCHAR");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Summary")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("NVARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("NVARCHAR");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(2217))
+                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2640))
                         .HasColumnName("LastUpdateDate");
 
                     b.HasKey("Id");

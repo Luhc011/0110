@@ -28,30 +28,31 @@ namespace Blog.Data.Mappings
                 .HasMaxLength(80);
 
             builder
-                .Property(x => x.Email)
-                .IsRequired()
-                .HasColumnType("VARCHAR")
-                .HasMaxLength(180);
+                .Property(x => x.Bio);
+            //.HasColumnType("VARCHAR")
+            //.HasMaxLength(200);
+            
+            builder
+                .Property(x => x.Email);
+            //.IsRequired()
+            //.HasColumnType("VARCHAR")
+            //.HasMaxLength(180);
 
             builder
-                .Property(x => x.Bio)
-                .HasColumnType("VARCHAR")
-                .HasMaxLength(200);
+                .Property(x => x.Image);
+            //.HasColumnType("VARCHAR")
+            //.HasMaxLength(200);
 
             builder
-                .Property(x => x.Image)
-                .HasColumnType("VARCHAR")
-                .HasMaxLength(200);
-
-            builder
-                .Property(x => x.PasswordHash)
-                .IsRequired()
-                .HasColumnType("VARCHAR")
-                .HasMaxLength(200);
+                .Property(x => x.PasswordHash);
+                //.IsRequired()
+                //.HasColumnType("VARCHAR")
+                //.HasMaxLength(200);
 
             builder
                 .Property(x => x.Slug)
                 .IsRequired()
+                .HasColumnName("Slug")
                 .HasColumnType("VARCHAR")
                 .HasMaxLength(80);
 
