@@ -70,7 +70,7 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(1782))
+                        .HasDefaultValue(new DateTime(2023, 10, 4, 1, 34, 22, 515, DateTimeKind.Utc).AddTicks(8358))
                         .HasColumnName("CreateDate");
 
                     b.Property<string>("Slug")
@@ -91,7 +91,7 @@ namespace Blog.Migrations
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("SMALLDATETIME")
-                        .HasDefaultValue(new DateTime(2023, 10, 2, 21, 32, 51, 113, DateTimeKind.Utc).AddTicks(2217))
+                        .HasDefaultValue(new DateTime(2023, 10, 4, 1, 34, 22, 515, DateTimeKind.Utc).AddTicks(8714))
                         .HasColumnName("LastUpdateDate");
 
                     b.HasKey("Id");
@@ -157,15 +157,15 @@ namespace Blog.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(180)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("Email");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -175,7 +175,9 @@ namespace Blog.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("VARCHAR")
+                        .HasColumnName("PasswordHash");
 
                     b.Property<string>("Slug")
                         .IsRequired()

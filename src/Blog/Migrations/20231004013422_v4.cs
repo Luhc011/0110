@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class v4 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,11 +60,11 @@ namespace Blog.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "NVARCHAR(80)", maxLength: 80, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "VARCHAR(180)", maxLength: 180, nullable: false),
+                    PasswordHash = table.Column<string>(type: "VARCHAR(255)", maxLength: 255, nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Slug = table.Column<string>(type: "VARCHAR(80)", maxLength: 80, nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -77,12 +77,12 @@ namespace Blog.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2302)),
-                    LastUpdateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 2, 21, 16, 35, 338, DateTimeKind.Utc).AddTicks(2640)),
+                    Title = table.Column<string>(type: "NVARCHAR(80)", maxLength: 80, nullable: false),
+                    Summary = table.Column<string>(type: "NVARCHAR(200)", maxLength: 200, nullable: false),
+                    Body = table.Column<string>(type: "NVARCHAR(2000)", maxLength: 2000, nullable: false),
+                    Slug = table.Column<string>(type: "VARCHAR(80)", maxLength: 80, nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 4, 1, 34, 22, 515, DateTimeKind.Utc).AddTicks(8358)),
+                    LastUpdateDate = table.Column<DateTime>(type: "SMALLDATETIME", nullable: false, defaultValue: new DateTime(2023, 10, 4, 1, 34, 22, 515, DateTimeKind.Utc).AddTicks(8714)),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false)
                 },
