@@ -3,9 +3,12 @@ using Blog.Extensions;
 using Blog.Models;
 using Blog.Services;
 using Blog.ViewModels;
+using Blog.ViewModels.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
+using System.Text.RegularExpressions;
 
 namespace Blog.Controllers
 {
@@ -98,5 +101,31 @@ namespace Blog.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost("v1/accounts/upload-image")]
+        public async Task<IActionResult> UploadImage(
+            [FromBody] UploadImageViewModel model,
+            [FromServices] DataContext context)
+        {
+            var fileName = $"{Guid.NewGuid()}.jpg";
+            var data = new Regex(@"^data:image\/[a-z]+;base64,").Replace(model.Base64Image, string.Empty);
+            var bytes = Convert.FromBase64String(data);
+
+            try
+            {
+                await System.IO.File.WriteAllBytesAsync($"wwwroot/images/{fileName}", bytes);
+
+                var user = await context.Users.FirstOrDefaultAsync(x => x.Email == User.Identity!.Name);
+                user!.Image = fileName;
+                await context.SaveChangesAsync();
+
+                return Ok(new ResultViewModel<string>($"images/{fileName}", null!));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                                    new ResultViewModel<string>("Falha interna no servidor"));
+            }
+        }
     }
 }
