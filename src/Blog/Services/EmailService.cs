@@ -11,13 +11,14 @@ public class EmailService
         string subject,
         string body,
         string fromName = "Equipe holanda",
-        string fromEmail = "equipe@holanda.com")
+        string fromEmail = "lucashcardoso@gmail.com")
     {
-        var smptClient = new SmtpClient(Configuration.Smtp.Host, Configuration.Smtp.Port);
-
-        smptClient.Credentials = new NetworkCredential(Configuration.Smtp.Username, Configuration.Smtp.Password);
-        smptClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-        smptClient.EnableSsl = true;
+        var smptClient = new SmtpClient(Configuration.Smtp.Host, Configuration.Smtp.Port)
+        {
+            Credentials = new NetworkCredential(Configuration.Smtp.Username, Configuration.Smtp.Password),
+            DeliveryMethod = SmtpDeliveryMethod.Network,
+            EnableSsl = true
+        };
 
         var mail = new MailMessage();
 
